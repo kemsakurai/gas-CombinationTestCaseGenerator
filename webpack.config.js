@@ -1,6 +1,5 @@
 const path = require('path');
 const GasPlugin = require("gas-webpack-plugin");
-const HtmlWebpackPlugin = require('html-webpack-plugin');
 
 module.exports = {
   mode: 'development',
@@ -15,11 +14,7 @@ module.exports = {
       {
         test: /\.ts$/,
         use: 'ts-loader'
-      },
-      {
-        test: /\.html$/,
-        loader: "html-loader"
-      }      
+      }
     ]
   },
   resolve: {
@@ -29,10 +24,6 @@ module.exports = {
     ]    
   },
   plugins: [
-    new GasPlugin(),
-    new HtmlWebpackPlugin({
-      filename: "./updateSchedule.html",
-      template: "./src/updateSchedule.html"
-    })
+    new GasPlugin()
   ]
 };
