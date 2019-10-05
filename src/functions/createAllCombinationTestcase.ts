@@ -1,3 +1,4 @@
+import Utils from '../libs/Utils';
 export const createAllCombinationTestcase = (): void => {
   Logger.log('createAllCombinationTestcase start');
   const configSheetName = 'Factor&Level';
@@ -6,9 +7,9 @@ export const createAllCombinationTestcase = (): void => {
     let values = configSheet
       .getRange(2, 1, configSheet.getLastRow(), configSheet.getLastColumn())
       .getValues();
-    values = transpose(values);
+    values = Utils.transpose(values);
     for (var i = 0; i < values.length; i++) {
-      values[i] = values[i].filter(isNotBlank);
+      values[i] = values[i].filter(Utils.isNotBlank);
     }
     let allCombination = cartesianProduct(values);
     const allCombinationSheetName = 'allCombination';
@@ -31,17 +32,6 @@ export const createAllCombinationTestcase = (): void => {
   Logger.log('createAllCombinationTestcase end');
 };
 
-function transpose(a) {
-  return Object.keys(a[0]).map(function(c) {
-    return a.map(function(r) {
-      return r[c];
-    });
-  });
-}
-function isNotBlank(value) {
-  let result = typeof value === 'undefined' || value === '';
-  return !result;
-}
 function cartesianProduct(arr) {
   return arr.reduce(
     function(a, b) {
