@@ -6,6 +6,16 @@
 // from six.moves import range, reduce
 
 // from .pairs_storage import PairsStorage, key
+import OrderedDict from './OrderedDict';
+import PairsStorage from './PairsStorage';
+import Utils from './Utils';
+
+class Pairs {
+  parameters: any;
+  constructor(parameters) {
+    this.parameters = parameters;
+  }
+}
 
 class Item {
   private _itemId: string;
@@ -41,10 +51,10 @@ function getMaxCombinationNumber(prameter_matrix, n) {
   for (let valueList of prameter_matrix) {
     paramLenList.push(valueList.length);
   }
-  let permutations = getPermutations(paramLenList, n);
+  let permutations = Utils.getPermutations(paramLenList, n);
   let sum = 0;
   for (let elem of permutations) {
-    // TODO n = 2 のみ
+    // TODO n = 2 のみ 動作する
     sum += elem[1] * elem[2];
   }
   return sum;
@@ -57,25 +67,58 @@ function cmpItem(lhs: Item, rhs: Item) {
   return lhs.weights < rhs.weights ? -1 : 1;
 }
 
-function getPermutations(array, size) {
-  function p(t, i) {
-    if (t.length === size) {
-      result.push(t);
-      return;
+export default class AllPairs {
+  _isOrderedDictParam: boolean;
+  _paramNameList: any[];
+  _pairClass: Pairs;
+  _filterFunc: any;
+  _n: number;
+  _pairs: PairsStorage;
+
+  constructor(parameters, filterFunc?, previouslyTested?, n?) {
+    if (!previouslyTested) {
+      previouslyTested = [[]];
     }
-    if (i + 1 > array.length) {
-      return;
-    }
-    p(t.concat(array[i]), i + 1);
-    p(t, i + 1);
+    this.validateParameter(parameters);
+    this._isOrderedDictParam = parameters.constructor === OrderedDict;
+    this._paramNameList = this.extractParamNameList(parameters);
+    this._pairClass = new Pairs(parameters);
+    this._filterFunc = filterFunc
+      ? filterFunc
+      : function() {
+          return true;
+        };
+    this._n = n;
+    this._pairs = new PairsStorage(n);
   }
 
-  var result = [];
-  p([], 0);
-  return result;
-}
+  private validateParameter(parameters) {
+    if (parameters.constructor === OrderedDict) {
+      for (let parameterList of parameters.values()) {
+        if (typeof parameterList === 'undefined') {
+          throw Error('each parameter arrays must have at least one item');
+        }
+      }
+      return;
+    }
 
-export default class AllPairs {}
+    if (parameters.length < 2) {
+      throw Error('must provide more than one option');
+    }
+
+    for (let parameterList of parameters) {
+      if (!parameterList) {
+        throw Error('each parameter arrays must have at least one item');
+      }
+    }
+  }
+  private extractParamNameList(parameters): any[] {
+    if (!this._isOrderedDictParam) {
+      return [];
+    }
+    return parameters.values();
+  }
+}
 
 // def __init__(self, parameters, filter_func=lambda x: True, previously_tested=None, n=2):
 //     """
@@ -185,21 +228,6 @@ export default class AllPairs {}
 
 //     # replace returned array elements with real values and return it
 //     return self.__get_iteration_value(chosen_item_list)
-
-// def __validate_parameter(self, value):
-//     if isinstance(value, OrderedDict):
-//         for parameter_list in six.itervalues(value):
-//             if not parameter_list:
-//                 raise ValueError("each parameter arrays must have at least one item")
-
-//         return
-
-//     if len(value) < 2:
-//         raise ValueError("must provide more than one option")
-
-//     for parameter_list in value:
-//         if not parameter_list:
-//             raise ValueError("each parameter arrays must have at least one item")
 
 // def __resort_working_array(self, chosen_item_list, num):
 //     for item in self.__working_item_matrix[num]:
