@@ -1,13 +1,5 @@
-// from collections import OrderedDict, namedtuple
-// from functools import cmp_to_key
-// from itertools import combinations
-
-// import six
-// from six.moves import range, reduce
-
-// from .pairs_storage import PairsStorage, key
 import OrderedDict from './OrderedDict';
-import PairsStorage from './PairsStorage';
+import PairsStorage, { key } from './PairsStorage';
 import Utils from './Utils';
 
 class Pairs {
@@ -46,16 +38,16 @@ class Item {
   }
 }
 
-function getMaxCombinationNumber(prameter_matrix, n) {
+function getMaxCombinationNumber(prameterMatrix, n) {
   let paramLenList = new Array();
-  for (let valueList of prameter_matrix) {
+  for (let valueList of prameterMatrix) {
     paramLenList.push(valueList.length);
   }
   let permutations = Utils.getPermutations(paramLenList, n);
   let sum = 0;
   for (let elem of permutations) {
     // TODO n = 2 のみ 動作する
-    sum += elem[1] * elem[2];
+    sum += elem[0] * elem[1];
   }
   return sum;
 }
@@ -74,8 +66,11 @@ export default class AllPairs {
   _filterFunc: any;
   _n: number;
   _pairs: PairsStorage;
+  _valueMatrix: any;
+  _maxUniquePairsExpected: number;
+  _workingItemMatrix: any;
 
-  constructor(parameters, filterFunc?, previouslyTested?, n?) {
+  constructor(parameters, filterFunc?, previouslyTested?, private n: number = 2) {
     if (!previouslyTested) {
       previouslyTested = [[]];
     }
@@ -90,6 +85,41 @@ export default class AllPairs {
         };
     this._n = n;
     this._pairs = new PairsStorage(n);
+    this._valueMatrix = this.extractValueMatrix(parameters);
+    this._maxUniquePairsExpected = getMaxCombinationNumber(this._valueMatrix, n);
+    this._workingItemMatrix = this.getWorkingItemMatrix(this._valueMatrix);
+
+    for (let arr of previouslyTested) {
+      if (!arr || arr.length == 0) {
+        continue;
+      }
+
+      if (arr.length != this._workingItemMatrix.length) {
+        throw Error('previously tested combination is not complete');
+      }
+
+      if (!this._filterFunc(arr)) {
+        throw Error('invalid tested combination is provided');
+      }
+
+      let tested = [];
+      for (let i in arr) {
+        let val = arr[i];
+        let idxs = [];
+        for (let item of this._workingItemMatrix[i]) {
+          if (item.value == val) {
+            idxs.push(new Item(item.id, String(0)));
+          }
+          if (idxs.length != 1) {
+            throw Error(
+              'value from previously tested combination is not found in the parameters or found more than once'
+            );
+          }
+        }
+        tested.push(idxs[0]);
+      }
+      this._pairs.addSequence(tested);
+    }
   }
 
   private validateParameter(parameters) {
@@ -112,181 +142,151 @@ export default class AllPairs {
       }
     }
   }
+
   private extractParamNameList(parameters): any[] {
     if (!this._isOrderedDictParam) {
       return [];
     }
     return parameters.values();
   }
+
+  private extractValueMatrix(parameters) {
+    if (!this._isOrderedDictParam) {
+      return parameters;
+    }
+    let ret = new Array();
+    for (let elem of parameters) {
+      ret.push(elem);
+    }
+    return ret;
+  }
+
+  private getWorkingItemMatrix(parameterMatrix) {
+    let ret = new Array();
+    for (let paramIndex in parameterMatrix) {
+      let valueList = parameterMatrix[paramIndex];
+      let innerRet = new Array();
+      for (let valueIndex in valueList) {
+        let value = valueList[valueIndex];
+        innerRet.push(new Item('a ' + paramIndex + 'v ' + valueIndex, value));
+      }
+      ret.push(innerRet);
+    }
+    return ret;
+  }
+  public iter() {
+    return this;
+  }
+  public next() {
+    return this._next();
+  }
+
+  public static _getValues(itemList) {
+    let ret = new Array();
+    for (let item of itemList) {
+      ret.push(item.value);
+    }
+    return ret;
+  }
+
+  private _next() {
+    let pairsLength = this._pairs.len();
+    if (!(pairsLength <= this._maxUniquePairsExpected)) {
+      throw Error('this._pairs.length <= this._maxUniquePairsExpected is false');
+    }
+    if (pairsLength == this._maxUniquePairsExpected) {
+      throw Error('StopIteration');
+    }
+    let previousUniquePairsCount = pairsLength;
+    let chosenItemList = [];
+    let indexes = [];
+
+    let direction = 1;
+    let i = 0;
+    while (-1 < i < this._workingItemMatrix.length) {
+      if (direction == 1) {
+        this.resortWorkingArray(chosenItemList.slice(0, i), i);
+        indexes[i] = 0;
+      } else if (direction == 0 || direction == -1) {
+        indexes[i] += 1;
+        if (indexes[i] >= this._workingItemMatrix[i].length) {
+          direction = -1;
+          if (i == 0) {
+            throw Error('StopIteration');
+          }
+          i += direction;
+          continue;
+        }
+        direction = 0;
+      } else {
+        throw Error("next(): unknown 'direction' code " + direction);
+      }
+
+      chosenItemList[i] = this._workingItemMatrix[i][indexes[i]];
+    
+      if (this._filterFunc(AllPairs._getValues(chosenItemList.slice(0, i + 1)))) {
+        if (!(direction > -1)) {
+          throw Error('direction > -1');
+        }
+        direction = 1;
+      } else {
+        direction = 0;
+        i += direction;
+      }
+    }
+    console.log("this._workingItemMatrix.length", this._workingItemMatrix.length);
+    console.log("chosenItemList.length", chosenItemList.length);
+    if (this._workingItemMatrix.length != chosenItemList.length) {
+      throw Error('StopIteration');
+    }
+    this._pairs.addSequence(chosenItemList);
+    pairsLength = this._pairs.len();
+    if (pairsLength == previousUniquePairsCount) {
+      throw Error('StopIteration');
+    }
+
+    return this._getIterationValue(chosenItemList);
+  }
+
+  private resortWorkingArray(chosenItemList, num) {
+    for (let item of this._workingItemMatrix[num]) {
+      let dataNode = this._pairs.getNodeInfo(item);
+      let newCombs = new Array();
+      for (let i of Utils.range(0, this._n, 1)) {
+        let unionSet = Utils.union(chosenItemList, [item]);
+        console.log("unionSet", unionSet);
+        let combinations = Utils.getPermutations(unionSet, i + 1);
+        for (let z of combinations) {
+          let setA = new Set(key(z));
+          let setB = this._pairs.getCombs()[i];
+          newCombs.push(Utils.difference(setA, setB));
+        }
+      }
+      let weights = [-1 * newCombs[newCombs.length - 1].length];
+      weights.push(dataNode._out.length);
+      for (let x of newCombs.reverse()) {
+        weights.push(x.length);
+      }
+      weights.push(-dataNode.counter);
+      weights.push(-1 * dataNode._in.length);
+      item.setWeights(weights);
+    }
+    this._workingItemMatrix[num].sort(cmpItem);
+  }
+
+  private _getIterationValue(itemList) {
+    if (!this._paramNameList) {
+      let ret = new Array();
+      for (let item of itemList) {
+        ret.push(item.value);
+      }
+      return ret;
+    }
+    let ret = new Array();
+    for (let item of itemList) {
+      ret.push(item.value);
+    }
+    this._pairClass = new Pairs(ret);
+    return this._pairClass;
+  }
 }
-
-// def __init__(self, parameters, filter_func=lambda x: True, previously_tested=None, n=2):
-//     """
-//     TODO: check that input arrays are:
-//         - (optional) has no duplicated values inside single array / or compress such values
-//     """
-
-//     if not previously_tested:
-//         previously_tested = [[]]
-
-//     self.__validate_parameter(parameters)
-
-//     self.__is_ordered_dict_param = isinstance(parameters, OrderedDict)
-//     self.__param_name_list = self.__extract_param_name_list(parameters)
-//     self.__pairs_class = namedtuple("Pairs", self.__param_name_list)
-
-//     self.__filter_func = filter_func
-//     self.__n = n
-//     self.__pairs = PairsStorage(n)
-
-//     value_matrix = self.__extract_value_matrix(parameters)
-//     self.__max_unique_pairs_expected = get_max_combination_number(value_matrix, n)
-//     self.__working_item_matrix = self.__get_working_item_matrix(value_matrix)
-
-//     for arr in previously_tested:
-//         if not arr:
-//             continue
-
-//         if len(arr) != len(self.__working_item_matrix):
-//             raise RuntimeError("previously tested combination is not complete")
-
-//         if not self.__filter_func(arr):
-//             raise ValueError("invalid tested combination is provided")
-
-//         tested = []
-//         for i, val in enumerate(arr):
-//             idxs = [
-//                 Item(item.id, 0) for item in self.__working_item_matrix[i] if item.value == val
-//             ]
-
-//             if len(idxs) != 1:
-//                 raise ValueError(
-//                     "value from previously tested combination is not "
-//                     "found in the parameters or found more than "
-//                     "once"
-//                 )
-
-//             tested.append(idxs[0])
-
-//         self.__pairs.add_sequence(tested)
-
-// def __iter__(self):
-//     return self
-
-// def next(self):
-//     return self.__next__()
-
-// def __next__(self):
-//     assert len(self.__pairs) <= self.__max_unique_pairs_expected
-
-//     if len(self.__pairs) == self.__max_unique_pairs_expected:
-//         # no reasons to search further - all pairs are found
-//         raise StopIteration()
-
-//     previous_unique_pairs_count = len(self.__pairs)
-//     chosen_item_list = [None] * len(self.__working_item_matrix)
-//     indexes = [None] * len(self.__working_item_matrix)
-
-//     direction = 1
-//     i = 0
-
-//     while -1 < i < len(self.__working_item_matrix):
-//         if direction == 1:
-//             # move forward
-//             self.__resort_working_array(chosen_item_list[:i], i)
-//             indexes[i] = 0
-//         elif direction == 0 or direction == -1:
-//             # scan current array or go back
-//             indexes[i] += 1
-//             if indexes[i] >= len(self.__working_item_matrix[i]):
-//                 direction = -1
-//                 if i == 0:
-//                     raise StopIteration()
-//                 i += direction
-//                 continue
-//             direction = 0
-//         else:
-//             raise ValueError("next(): unknown 'direction' code '{}'".format(direction))
-
-//         chosen_item_list[i] = self.__working_item_matrix[i][indexes[i]]
-
-//         if self.__filter_func(self.__get_values(chosen_item_list[: i + 1])):
-//             assert direction > -1
-//             direction = 1
-//         else:
-//             direction = 0
-//         i += direction
-
-//     if len(self.__working_item_matrix) != len(chosen_item_list):
-//         raise StopIteration()
-
-//     self.__pairs.add_sequence(chosen_item_list)
-
-//     if len(self.__pairs) == previous_unique_pairs_count:
-//         # could not find new unique pairs - stop
-//         raise StopIteration()
-
-//     # replace returned array elements with real values and return it
-//     return self.__get_iteration_value(chosen_item_list)
-
-// def __resort_working_array(self, chosen_item_list, num):
-//     for item in self.__working_item_matrix[num]:
-//         data_node = self.__pairs.get_node_info(item)
-
-//         new_combs = [
-//             # numbers of new combinations to be created if this item is
-//             # appended to array
-//             set([key(z) for z in combinations(chosen_item_list + [item], i + 1)])
-//             - self.__pairs.get_combs()[i]
-//             for i in range(0, self.__n)
-//         ]
-
-//         # weighting the node node that creates most of new pairs is the best
-//         weights = [-len(new_combs[-1])]
-
-//         # less used outbound connections most likely to produce more new
-//         # pairs while search continues
-//         weights.extend(
-//             [len(data_node.out)]
-//             + [len(x) for x in reversed(new_combs[:-1])]
-//             + [-data_node.counter]  # less used node is better
-//         )
-
-//         # otherwise we will prefer node with most of free inbound
-//         # connections; somehow it works out better ;)
-//         weights.append(-len(data_node.in_))
-
-//         item.set_weights(weights)
-
-//     self.__working_item_matrix[num].sort(key=cmp_to_key(cmp_item))
-
-// def __get_working_item_matrix(self, parameter_matrix):
-//     return [
-//         [
-//             Item("a{:d}v{:d}".format(param_idx, value_idx), value)
-//             for value_idx, value in enumerate(value_list)
-//         ]
-//         for param_idx, value_list in enumerate(parameter_matrix)
-//     ]
-
-// @staticmethod
-// def __get_values(item_list):
-//     return [item.value for item in item_list]
-
-// def __get_iteration_value(self, item_list):
-//     if not self.__param_name_list:
-//         return [item.value for item in item_list]
-
-//     return self.__pairs_class(*[item.value for item in item_list])
-
-// def __extract_param_name_list(self, parameters):
-//     if not self.__is_ordered_dict_param:
-//         return []
-
-//     return list(parameters)
-
-// def __extract_value_matrix(self, parameters):
-//     if not self.__is_ordered_dict_param:
-//         return parameters
-
-//     return [v for v in six.itervalues(parameters)]

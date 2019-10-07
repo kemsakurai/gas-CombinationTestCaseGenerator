@@ -35,7 +35,7 @@ class PairsStorageNode {
 }
 
 let keyCache = {};
-function key(items) {
+export function key(items) {
   if (items in keyCache) {
     return keyCache[makeKey(items)];
   }
@@ -59,15 +59,18 @@ export default class PairsStorage {
   constructor(n) {
     this._n = n;
     this._nodes = {};
-    this._combsArr = new Set(Array.from(Array(n).keys()));
+    this._combsArr = new Array();
+    for (let e of Array.from(Array(n).keys())) {
+      this._combsArr.push(new Set());
+    }
   }
 
-  public length() {
-    return this._combsArr[this._combsArr.length - 1].length;
+  public len() {
+    return this._combsArr[this._combsArr.length - 1].size;
   }
 
   public addSequence(sequence) {
-    for (let i of range(1, this._n + 1, 1)) {
+    for (let i of Utils.range(1, this._n + 1, 1)) {
       for (let combination of Utils.getPermutations(sequence, i)) {
         this.addCombination(combination);
       }
@@ -103,33 +106,12 @@ export default class PairsStorage {
       }
     }
   }
+
+  public getNodeInfo(item) {
+    return this._nodes[item.id] != null ? this._nodes[item.id] : new PairsStorageNode(item.id);
+  }
+
+  public getCombs() {
+    return this._combsArr;
+  }
 }
-
-function range(start, stop, step) {
-  if (typeof stop == 'undefined') {
-    // one param defined
-    stop = start;
-    start = 0;
-  }
-
-  if (typeof step == 'undefined') {
-    step = 1;
-  }
-
-  if ((step > 0 && start >= stop) || (step < 0 && start <= stop)) {
-    return [];
-  }
-
-  var result = [];
-  for (var i = start; step > 0 ? i < stop : i > stop; i += step) {
-    result.push(i);
-  }
-
-  return result;
-}
-
-// def get_node_info(self, item):
-//     return self.__nodes.get(item.id, Node(item.id))
-
-// def get_combs(self):
-//     return self.__combs_arr
