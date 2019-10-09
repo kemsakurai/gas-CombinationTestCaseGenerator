@@ -13,6 +13,7 @@ export const createOneWiseTestcase = (): void => {
     for (var i = 0; i < values.length; i++) {
       values[i] = values[i].filter(Utils.isNotBlank);
     }
+    Utils.difference(new Set(), new Set());
 
     let oneWiseCombination = oneWise(values);
     const combinationSheetName = 'oneWiseCombination';
