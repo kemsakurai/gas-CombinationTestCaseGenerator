@@ -1,9 +1,9 @@
 {
     "compilerOptions": {
+      "downlevelIteration": true,
       "sourceMap": true,
-      "target": "es5",
-      "module": "es2015",
+      "target": "es3",    
+      "module": "es6",
       "esModuleInterop": true
     }
-  }
-  
+}

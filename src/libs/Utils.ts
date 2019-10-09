@@ -24,24 +24,25 @@ export default class Utils {
       p(t.concat(array[i]), i + 1);
       p(t, i + 1);
     }
+
     var result = [];
     p([], 0);
     return result;
   }
   public static union(setA, setB) {
-    var _union = new Set(setA);
-    for (var elem of setB) {
-      _union.add(elem);
-    }
-    return _union;
+    // var _union = new Set(setA);
+    // for (var elem of setB) {
+    //   _union.add(elem);
+    // }
+    // return _union;
   }
 
   public static difference(setA, setB) {
-    var _difference = new Set(setA);
-    for (var elem of setB) {
-      _difference.delete(elem);
-    }
-    return _difference;
+    // var _difference = new Set(setA);
+    // for (var elem of setB) {
+    //   _difference.delete(elem);
+    // }
+    // return _difference;
   }
 
   public static range(start, stop, step) {
