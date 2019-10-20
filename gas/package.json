@@ -59,7 +59,6 @@
     "@types/google-apps-script": "0.0.53",
     "@types/jest": "^24.0.15",
     "@types/node": "^12.6.8",
-    "babel-polyfill": "^6.26.0",
     "es6-promise": "^4.2.8",
     "es6-shim": "^0.35.5",
     "merge": ">=1.2.1",

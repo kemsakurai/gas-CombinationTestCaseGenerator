@@ -5,8 +5,12 @@ export const createFactorAndLevelSheet = (): void => {
   if (!configSheet) {
     configSheet = SpreadsheetApp.getActiveSpreadsheet().insertSheet();
     configSheet.setName(configSheetName);
+
+    // Set header
     let range = configSheet.getRange('A1:D1');
     range.setBackground('yellow');
+
+    // Set examples
     let headers: string[] = new Array();
     headers.push('Brand (Factor)');
     headers.push('OS (Factor)');
