@@ -13,7 +13,7 @@ def all_pair_test_cases(request):
     """
     request_json = request.get_json()
     all_pairs = AllPairs(request_json)
-    results = [];
+    results = []
 
     for pairs in all_pairs:
         results.append(pairs)
