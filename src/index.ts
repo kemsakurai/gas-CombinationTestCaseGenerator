@@ -7,8 +7,7 @@ function onOpen() {
   let ui = SpreadsheetApp.getUi();
   let menu = ui.createMenu('gas-CombinationTestCaseGenerator');
   menu.addSubMenu(ui.createMenu("Settings")
-          .addItem('Create Factor&Level sheet', 'createFactorAndLevelSheet')
-          .addItem('Set pair-wise API URL', 'setPairWiseAPIURL'))
+          .addItem('Create Factor&Level sheet', 'createFactorAndLevelSheet'))
         .addSeparator()
         .addSubMenu(ui.createMenu("Create test case")
           .addItem('Create all combination test case', 'createAllCombinationTestcase')

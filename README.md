@@ -12,31 +12,67 @@ Google スプレッドシートで、組み合わせテストケースの生成�
 
 * ペアワイズ      
 
-全網羅と、ワンワイズ テストの生成は、コンテナバインドスクリプトのみで可能ですが、ペアワイズテストは Google Cloud Functions のデプロイが必要になります。     
+全網羅と、ワンワイズ テストの生成、ペアワイズ　テストの生成が可能です。       
 
 --------------------------------------------------------
 ## 使い方    
 
 以下、使い方について記載します。       
 
-1. スプレッドシートを作成し、[gas-CombinationTestCaseGenerator/gas at master · kemsakurai/gas-CombinationTestCaseGenerator](https://github.com/kemsakurai/gas-CombinationTestCaseGenerator/tree/master/gas) をデプロイする。      
+1. コンテナバインドスクリプトのデプロイ方法                                            
 
-2. [gas-CombinationTestCaseGenerator/gcf at master · kemsakurai/gas-CombinationTestCaseGenerator](https://github.com/kemsakurai/gas-CombinationTestCaseGenerator/tree/master/gcf) をCloud Function として、GCPにデプロイする。       
+2. スプレッドシートのメニューの説明       
 
-3. `2.` の Cloud Function の URL を コンテナバインドスクリプトのスクリプトプロパティとして設定する。      
-
-4. テスト因子抽出       
-
-5. テストケース生成        
+3. テストケース生成        
 
 ---------------------------------------------------------
-## コンテナバインドスクリプトのデプロイ方法                                            
+## 1. コンテナバインドスクリプトのデプロイ方法                                            
+
+### clasp のインストール      
+コンテナバインドスクリプトをデプロイするため、clasp をインストールする必要があります。      
+* clasp のインストール      
+```console
+npm i @google/clasp -g    
+```
+
+* clasp login    
+```console
+clasp login    
+```
+
+使用しているGoogle アカウントに対して、clasp　から `Google Apps Script ののプロジェクトの作成と更新`、`Google Apps Script のデプロイの作成と更新` を許可する必要があります。     
+
+### Script の デプロイ     
+* git repository を cloneします。       
+```console
+git clone https://github.com/kemsakurai/gas-PageSpeedInsights-v5.git <project_name>   
+```
+
+* npm install   
+```console
+cd <project_name>
+npm install  
+```
+
+* .clasp.json の スクリプトIDを変更する          
+.clasp.json の scriptId を、デプロイ先のコンテナバインドスクリプトのscriptIdに変更します。      
+```console
+{"scriptId":"<your_script_id>", "rootDir": "dist" }
+```
+
+* コンテナバインドスクリプトのscriptIdの入手方法        
+    1. デプロイ先のスプレッドシート を作成し、メニューのツールから、スクリプトエディタを開きます。         
+    2. スクリプトエディタのファイルから、プロジェクトのプロパティを選択します。     
+    [![Image from Gyazo](https://i.gyazo.com/662c1553f57d34cd2f14d4c211e1e152.png)](https://gyazo.com/662c1553f57d34cd2f14d4c211e1e152)      
+    3. ダイアログに表示されるスクリプトIDをコピー、ペーストします。     
+    [![Image from Gyazo](https://i.gyazo.com/3e7be62edfb9bebba99684f485fff7f1.png)](https://gyazo.com/3e7be62edfb9bebba99684f485fff7f1)      
+
+
+### dist ディレクトリ配下のスクリプトのコピー、ペースト         
+clasp、npm の環境構築が面倒な場合、[dist](https://github.com/kemsakurai/gas-CombinationTestCaseGenerator/tree/master/dist)配下の、`bundle.js` と、`appsscript.json` をスクリプトエディタからコピー、ペーストすることで登録できます。        
 
 ---------------------------------------------------------
-## Cloud Function のデプロイ方法         
-
----------------------------------------------------------
-## スプレッドシートのメニューの説明         
+## 2. スプレッドシートのメニューの説明         
 
 コンテナバインドスクリプトを、デプロイすると、スプレッドシートに以下のメニューが追加されます。      
 ![2019-11-30 15.23.15.png - Google ドライブ](https://drive.google.com/uc?export=view&id=1KgAuvvSBW_tIVaS-ZBmzSltxJgJtDM8f)     
@@ -44,17 +80,16 @@ Google スプレッドシートで、組み合わせテストケースの生成�
 ----
 
 ### Settings     
-![2019-11-30 15.23.28.png - Google ドライブ](https://drive.google.com/uc?export=view&id=1fFpcGNcv_g1LFsjQlzpEoBmbSWcn-n8T)     
+[![Image from Gyazo](https://i.gyazo.com/1da10dfc5bbed034dcb10bfaf3b917ec.png)](https://gyazo.com/1da10dfc5bbed034dcb10bfaf3b917ec)     
+
 * Create Factor&Level Sheet     
 因子と水準を記録するシートを作成します。       
-
-* Set pair-wise API URL     
-Cloud Function の API URL を設定します。オールペア法のテストケース生成に使用します。        
 
 ----
 
 ### Create test case      
 ![2019-11-30 15.23.38.png - Google ドライブ](https://drive.google.com/uc?export=view&id=1XXIZIW8iwgSoD7hxFjTMGXRwdDNb88Gs)                
+
 * Create all combination test case     
 全網羅組み合わせテストを生成します。        
 
@@ -64,3 +99,24 @@ one-wise テストケースを生成します。
 * Create pair-wise test case           
 pair-wise テストケースを生成します。        
 
+-----------------------    
+## ペアワイズ テストのライブラリについて                
+
+[walkframe/covertable: It makes combinations covering pairs for pairwise testing.](https://github.com/walkframe/covertable) を使用しています。           
+設定オプションは以下の通りです。        
+
+```javascript
+import { default as make, sorters } from '../libs/covertable/index';
+export const pairWise = (values): any => {
+  return make(values, {
+    // optional
+    length: 2, // default: 2
+    sorter: sorters.greedy, // default: sorters.sequential
+    sortArgs: {} // default: {}
+  });
+};
+```
+
+-----------------------
+## ライセンス      
+MIT
