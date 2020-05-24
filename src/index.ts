@@ -2,7 +2,6 @@ import { createFactorAndLevelSheet } from './functions/createFactorAndLevelSheet
 import { createAllCombinationTestcase } from './functions/createAllCombinationTestcase';
 import { createOneWiseTestcase } from './functions/createOneWiseTestcase';
 import { createPairWiseTestcase } from './functions/createPairWiseTestcase';
-import { setPairWiseAPIURL } from './functions/setPairWiseAPIURL';
 
 function onOpen() {
   let ui = SpreadsheetApp.getUi();
@@ -24,4 +23,3 @@ global.createFactorAndLevelSheet = createFactorAndLevelSheet;
 global.createAllCombinationTestcase = createAllCombinationTestcase;
 global.createOneWiseTestcase = createOneWiseTestcase;
 global.createPairWiseTestcase = createPairWiseTestcase;
-global.setPairWiseAPIURL = setPairWiseAPIURL;

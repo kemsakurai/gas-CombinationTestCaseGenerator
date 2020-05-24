@@ -11,8 +11,5 @@ node_modules/
 # Editor
 .idea/
 
-# Build directory
-dist/
-
 # .clasp.json
 .clasp.json
