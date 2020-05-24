@@ -13,6 +13,3 @@ node_modules/
 
 # Build directory
 dist/
-
-# .clasp.json
-.clasp.json
