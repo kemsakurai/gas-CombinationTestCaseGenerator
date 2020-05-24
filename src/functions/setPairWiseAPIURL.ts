@@ -1,6 +1,8 @@
 import Utils from '../libs/Utils';
 export const setPairWiseAPIURL = (): void => {
-  let ui = SpreadsheetApp.getUi();
+  let ui = SpreadsheetApp.getUi();  
+  let response = ui.prompt('APIのURLを入力してください。');
+  
   let response = ui.prompt('APIのURLを入力してください。');
   let token = response.getResponseText();
   // getSelectedButtonでクリックされたボタンの情報を取得できる。入力値なしか×ボタンをクリックされたかの確認をしている

@@ -8,11 +8,22 @@ describe('oneWise()', () => {
     expect(oneWise([[1]])).toStrictEqual([[1]]);
   });
   test('Two array should return Two array', () => {
-    expect(oneWise([[1], ['A', 'B']])).toStrictEqual([[1, 'A'], [1, 'B']]);
+    expect(oneWise([[1], ['A', 'B']])).toStrictEqual([
+      [1, 'A'],
+      [1, 'B']
+    ]);
   });
   test('Two array should return One wise test case', () => {
     const fakeRandom = () => 0.1;
-    expect(oneWise([[1, 2], ['A', 'B', 'C']], fakeRandom)).toStrictEqual([
+    expect(
+      oneWise(
+        [
+          [1, 2],
+          ['A', 'B', 'C']
+        ],
+        fakeRandom
+      )
+    ).toStrictEqual([
       [1, 'A'],
       [2, 'B'],
       [1, 'C']
