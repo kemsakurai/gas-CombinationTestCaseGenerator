@@ -17,7 +17,7 @@ export const createFactorAndLevelSheet = (): void => {
     headers.push('Network (Factor)');
     headers.push('Work style (Factor)');
     range.setValues([headers]);
-
+    
     range = configSheet.getRange('A2:D5');
     let values: string[][] = [
       ['Brand X', '98', 'Internal', 'Salaried'],

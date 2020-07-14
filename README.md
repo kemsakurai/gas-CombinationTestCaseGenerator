@@ -45,7 +45,7 @@ clasp login
 ### Script の デプロイ     
 * git repository を cloneします。       
 ```console
-git clone https://github.com/kemsakurai/gas-PageSpeedInsights-v5.git <project_name>   
+git clone https://github.com/kemsakurai/gas-CombinationTestCaseGenerator.git <project_name>   
 ```
 
 * npm install   

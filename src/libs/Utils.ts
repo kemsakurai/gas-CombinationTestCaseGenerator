@@ -19,15 +19,7 @@ export default class Utils {
       throw new Error(message);
     }
   }
-
-  public static setPairWiseAPIURL(value: string) {
-    PropertiesService.getScriptProperties().setProperty('API_URL', value);
-  }
-
-  public static getPairWiseAPIURL(): string {
-    return PropertiesService.getScriptProperties().getProperty('API_URL');
-  }
-
+  
   public static getPermutations(array: any, size: number) {
     function p(t, i) {
       if (t.length === size) {
