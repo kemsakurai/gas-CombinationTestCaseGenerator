@@ -54,19 +54,26 @@ cd <project_name>
 npm install  
 ```
 
-* .clasp.json の スクリプトIDを変更する          
-.clasp.json の scriptId を、デプロイ先のコンテナバインドスクリプトのscriptIdに変更します。      
-```console
-{"scriptId":"<your_script_id>", "rootDir": "dist" }
-```
+* スプレッドシート を作成する場合                          
+スプレッドシート を新規で作成する場合は、`npm run setup` を実行します。                   
+`.clasp.json` の初期化、スプレッドシート を作成します。        
 
-* コンテナバインドスクリプトのscriptIdの入手方法        
-    1. デプロイ先のスプレッドシート を作成し、メニューのツールから、スクリプトエディタを開きます。         
-    2. スクリプトエディタのファイルから、プロジェクトのプロパティを選択します。     
-    [![Image from Gyazo](https://i.gyazo.com/662c1553f57d34cd2f14d4c211e1e152.png)](https://gyazo.com/662c1553f57d34cd2f14d4c211e1e152)      
-    3. ダイアログに表示されるスクリプトIDをコピー、ペーストします。     
-    [![Image from Gyazo](https://i.gyazo.com/3e7be62edfb9bebba99684f485fff7f1.png)](https://gyazo.com/3e7be62edfb9bebba99684f485fff7f1)      
+* 既存のスプレッドシート を使う場合            
+以下、既存のスプレッドシートを使用する場合の手順を記載します。         
+  * 
+  
+  * .clasp.json の スクリプトIDを変更する          
+  .clasp.json の scriptId を、デプロイ先のコンテナバインドスクリプトのscriptIdに変更します。      
+  ```console
+  {"scriptId":"<your_script_id>", "rootDir": "dist" }
+  ```
 
+  * 補足.コンテナバインドスクリプトのscriptIdの入手方法        
+      1. デプロイ先のスプレッドシート を作成し、メニューのツールから、スクリプトエディタを開きます。         
+      2. スクリプトエディタのファイルから、プロジェクトのプロパティを選択します。     
+      [![Image from Gyazo](https://i.gyazo.com/662c1553f57d34cd2f14d4c211e1e152.png)](https://gyazo.com/662c1553f57d34cd2f14d4c211e1e152)      
+      3. ダイアログに表示されるスクリプトIDをコピー、ペーストします。     
+      [![Image from Gyazo](https://i.gyazo.com/3e7be62edfb9bebba99684f485fff7f1.png)](https://gyazo.com/3e7be62edfb9bebba99684f485fff7f1)      
 
 ### dist ディレクトリ配下のスクリプトのコピー、ペースト         
 clasp、npm の環境構築が面倒な場合、[dist](https://github.com/kemsakurai/gas-CombinationTestCaseGenerator/tree/master/dist)配下の、`bundle.js` と、`appsscript.json` をスクリプトエディタからコピー、ペーストすることで登録できます。        
