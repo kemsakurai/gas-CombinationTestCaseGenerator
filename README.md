@@ -60,8 +60,12 @@ npm install
 
 * 既存のスプレッドシート を使う場合            
 以下、既存のスプレッドシートを使用する場合の手順を記載します。         
-  * 
-  
+  * `setup:use-id` コマンドを実行する         
+  既に存在する scriptId を使用して、以下のコマンドを実行します。      
+  ```console
+  npm run setup:use-id 1K7MPtCHkjasdf93238234asdKFDF3sa9
+  ```
+
   * .clasp.json の スクリプトIDを変更する          
   .clasp.json の scriptId を、デプロイ先のコンテナバインドスクリプトのscriptIdに変更します。      
   ```console
