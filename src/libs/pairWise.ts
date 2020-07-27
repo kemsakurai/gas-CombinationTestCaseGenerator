@@ -1,4 +1,6 @@
-import { default as make, sorters } from '../libs/covertable/index';
+import { default as make, sorters } from "../libs/covertable/index";
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any,@typescript-eslint/explicit-module-boundary-types
 export const pairWise = (values): any => {
   return make(values, {
     // optional

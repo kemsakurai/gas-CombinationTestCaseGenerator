@@ -1,18 +1,19 @@
-import { oneWise } from '../libs/oneWise';
-import AbstractTestcaseCreator from './AbstractTestcaseCreator';
+import { oneWise } from "../libs/oneWise";
+import AbstractTestcaseCreator from "./AbstractTestcaseCreator";
 
 export const createOneWiseTestcase = (): void => {
-  Logger.log('createOneWiseTestcase start');
-  let creator = new TestcaseCreator();
+  Logger.log("createOneWiseTestcase start");
+  const creator = new TestcaseCreator();
   creator.create();
-  Logger.log('createOneWiseTestcase end');
+  Logger.log("createOneWiseTestcase end");
 };
 
 class TestcaseCreator extends AbstractTestcaseCreator {
   protected getSheetName(): string {
-    return 'oneWiseCombination';
+    return "oneWiseCombination";
   }
-  protected createTestcases(values: any[][]) {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  protected createTestcases(values: any[][]): any {
     return oneWise(values);
   }
 }

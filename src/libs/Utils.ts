@@ -1,10 +1,10 @@
 export default class Utils {
   public static isNotBlank(value: string): boolean {
-    let result = typeof value === 'undefined' || value === '';
+    const result = typeof value === "undefined" || value === "";
     return !result;
   }
-
-  public static transpose(a: {}[]) {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any,@typescript-eslint/ban-types
+  public static transpose(a: {}[]): any {
     return Object.keys(a[0]).map(function(c) {
       return a.map(function(r) {
         return r[c];
@@ -14,13 +14,14 @@ export default class Utils {
   /**
    * checkUndefined
    */
-  public static checkUndefined(value: any, message: string) {
-    if (typeof value === 'undefined') {
+  // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types,@typescript-eslint/no-explicit-any
+  public static checkUndefined(value: any, message: string): void {
+    if (typeof value === "undefined") {
       throw new Error(message);
     }
   }
-  
-  public static getPermutations(array: any, size: number) {
+  // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types,@typescript-eslint/no-explicit-any
+  public static getPermutations(array: any, size: number): any {
     function p(t, i) {
       if (t.length === size) {
         result.push(t);
@@ -33,7 +34,7 @@ export default class Utils {
       p(t, i + 1);
     }
 
-    var result = [];
+    const result = [];
     p([], 0);
     return result;
   }

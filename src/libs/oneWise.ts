@@ -1,15 +1,16 @@
-'use strict';
+"use strict";
 
-export const oneWise = (arr, randomFn?): any => {
-  let fn = randomFn || Math.random;
-  let interactions = []; // matrix
+// eslint-disable-next-line @typescript-eslint/no-explicit-any,@typescript-eslint/explicit-module-boundary-types
+export const oneWise = (arr: any, randomFn?: any): any => {
+  const fn = randomFn || Math.random;
+  const interactions = []; // matrix
   let greatest = 1;
   let len = 0;
   let elems = null; // parameter
   let row = null;
   for (let i = 0; i < greatest; ++i) {
     row = [];
-    for (let j in arr) {
+    for (const j in arr) {
       elems = arr[j];
       len = elems.length;
       if (len > greatest) {
