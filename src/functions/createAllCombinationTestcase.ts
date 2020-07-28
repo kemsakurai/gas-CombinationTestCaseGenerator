@@ -21,17 +21,17 @@ function cartesianProduct(arr: any[][]): any {
   return arr.reduce(
     function(a, b) {
       return (
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         a
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
           .map(function(x: { concat: (arg0: any) => void }) {
             return b.map(function(y) {
               return x.concat(y);
             });
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
           })
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          .reduce(function(a: { concat: (arg0: any) => void }, b: any) {
+          .reduce(function(a: { concat: (arg0: any) => void[] }, b: any) {
             return a.concat(b);
-          }, [])
+          })
       );
     },
     [[]]

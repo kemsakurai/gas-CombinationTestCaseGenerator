@@ -1048,17 +1048,17 @@ class AbstractTestcaseCreator {
      * The template method defines the skeleton of an algorithm.
      */
     create() {
-        const configSheetName = 'Factor&Level';
-        let configSheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName(configSheetName);
-        _libs_Utils__WEBPACK_IMPORTED_MODULE_0__["default"].checkUndefined(configSheet, 'configSheet is Undefined..');
+        const configSheetName = "Factor&Level";
+        const configSheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName(configSheetName);
+        _libs_Utils__WEBPACK_IMPORTED_MODULE_0__["default"].checkUndefined(configSheet, "configSheet is Undefined..");
         let values = configSheet
             .getRange(2, 1, configSheet.getLastRow(), configSheet.getLastColumn())
             .getValues();
         values = _libs_Utils__WEBPACK_IMPORTED_MODULE_0__["default"].transpose(values);
-        for (var i = 0; i < values.length; i++) {
+        for (let i = 0; i < values.length; i++) {
             values[i] = values[i].filter(_libs_Utils__WEBPACK_IMPORTED_MODULE_0__["default"].isNotBlank);
         }
-        let combinationTestcases = this.createTestcases(values);
+        const combinationTestcases = this.createTestcases(values);
         const combinationTestCaseSheetName = this.getSheetName();
         let combinationSheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName(combinationTestCaseSheetName);
         if (!combinationSheet) {
@@ -1068,10 +1068,12 @@ class AbstractTestcaseCreator {
         else {
             combinationSheet.clear();
         }
-        let headerValues = configSheet.getRange(1, 1, 1, configSheet.getLastColumn()).getValues();
-        let headerRange = combinationSheet.getRange(1, 1, 1, headerValues[0].length);
+        const headerValues = configSheet
+            .getRange(1, 1, 1, configSheet.getLastColumn())
+            .getValues();
+        const headerRange = combinationSheet.getRange(1, 1, 1, headerValues[0].length);
         headerRange.setValues(headerValues);
-        headerRange.setBackground('green');
+        headerRange.setBackground("green");
         combinationSheet
             .getRange(2, 1, combinationTestcases.length, combinationTestcases[0].length)
             .setValues(combinationTestcases);
@@ -1094,30 +1096,35 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _AbstractTestcaseCreator__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./AbstractTestcaseCreator */ "./src/functions/AbstractTestcaseCreator.ts");
 
 const createAllCombinationTestcase = () => {
-    Logger.log('createAllCombinationTestcase start');
-    let creator = new TestcaseCreator();
+    Logger.log("createAllCombinationTestcase start");
+    const creator = new TestcaseCreator();
     creator.create();
-    Logger.log('createAllCombinationTestcase end');
+    Logger.log("createAllCombinationTestcase end");
 };
 class TestcaseCreator extends _AbstractTestcaseCreator__WEBPACK_IMPORTED_MODULE_0__["default"] {
     getSheetName() {
-        return 'allCombination';
+        return "allCombination";
     }
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     createTestcases(values) {
         return cartesianProduct(values);
     }
 }
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 function cartesianProduct(arr) {
     return arr.reduce(function (a, b) {
-        return a
+        return (
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        a
             .map(function (x) {
             return b.map(function (y) {
                 return x.concat(y);
             });
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
         })
             .reduce(function (a, b) {
             return a.concat(b);
-        }, []);
+        }));
     }, [[]]);
 }
 
@@ -1135,32 +1142,32 @@ function cartesianProduct(arr) {
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "createFactorAndLevelSheet", function() { return createFactorAndLevelSheet; });
 const createFactorAndLevelSheet = () => {
-    Logger.log('createFactorAndLevelSheet start');
-    const configSheetName = 'Factor&Level';
+    Logger.log("createFactorAndLevelSheet start");
+    const configSheetName = "Factor&Level";
     let configSheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName(configSheetName);
     if (!configSheet) {
         configSheet = SpreadsheetApp.getActiveSpreadsheet().insertSheet();
         configSheet.setName(configSheetName);
         // Set header
-        let range = configSheet.getRange('A1:D1');
-        range.setBackground('yellow');
+        let range = configSheet.getRange("A1:D1");
+        range.setBackground("yellow");
         // Set examples
-        let headers = new Array();
-        headers.push('Brand (Factor)');
-        headers.push('OS (Factor)');
-        headers.push('Network (Factor)');
-        headers.push('Work style (Factor)');
+        const headers = [];
+        headers.push("Brand (Factor)");
+        headers.push("OS (Factor)");
+        headers.push("Network (Factor)");
+        headers.push("Work style (Factor)");
         range.setValues([headers]);
-        range = configSheet.getRange('A2:D5');
-        let values = [
-            ['Brand X', '98', 'Internal', 'Salaried'],
-            ['Brand Y', 'NT', 'Modem', 'Hourly'],
-            ['', '2000', '', 'Part-Time'],
-            ['', 'XP', '', 'Contr.']
+        range = configSheet.getRange("A2:D5");
+        const values = [
+            ["Brand X", "98", "Internal", "Salaried"],
+            ["Brand Y", "NT", "Modem", "Hourly"],
+            ["", "2000", "", "Part-Time"],
+            ["", "XP", "", "Contr."]
         ];
         range.setValues(values);
     }
-    Logger.log('createFactorAndLevelSheet end');
+    Logger.log("createFactorAndLevelSheet end");
 };
 
 
@@ -1181,15 +1188,16 @@ __webpack_require__.r(__webpack_exports__);
 
 
 const createOneWiseTestcase = () => {
-    Logger.log('createOneWiseTestcase start');
-    let creator = new TestcaseCreator();
+    Logger.log("createOneWiseTestcase start");
+    const creator = new TestcaseCreator();
     creator.create();
-    Logger.log('createOneWiseTestcase end');
+    Logger.log("createOneWiseTestcase end");
 };
 class TestcaseCreator extends _AbstractTestcaseCreator__WEBPACK_IMPORTED_MODULE_1__["default"] {
     getSheetName() {
-        return 'oneWiseCombination';
+        return "oneWiseCombination";
     }
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     createTestcases(values) {
         return Object(_libs_oneWise__WEBPACK_IMPORTED_MODULE_0__["oneWise"])(values);
     }
@@ -1213,15 +1221,16 @@ __webpack_require__.r(__webpack_exports__);
 
 
 const createPairWiseTestcase = () => {
-    Logger.log('createPairWiseTestcase start');
-    let creator = new TestcaseCreator();
+    Logger.log("createPairWiseTestcase start");
+    const creator = new TestcaseCreator();
     creator.create();
-    Logger.log('createPairWiseTestcase end');
+    Logger.log("createPairWiseTestcase end");
 };
 class TestcaseCreator extends _AbstractTestcaseCreator__WEBPACK_IMPORTED_MODULE_1__["default"] {
     getSheetName() {
-        return 'pairWiseCombination';
+        return "pairWiseCombination";
     }
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     createTestcases(values) {
         return Object(_libs_pairWise__WEBPACK_IMPORTED_MODULE_0__["pairWise"])(values);
     }
@@ -1248,15 +1257,18 @@ __webpack_require__.r(__webpack_exports__);
 
 
 function onOpen() {
-    let ui = SpreadsheetApp.getUi();
-    let menu = ui.createMenu('gas-CombinationTestCaseGenerator');
-    menu.addSubMenu(ui.createMenu("Settings")
-        .addItem('Create Factor&Level sheet', 'createFactorAndLevelSheet'))
+    const ui = SpreadsheetApp.getUi();
+    const menu = ui.createMenu("gas-CombinationTestCaseGenerator");
+    menu
+        .addSubMenu(ui
+        .createMenu("Settings")
+        .addItem("Create Factor&Level sheet", "createFactorAndLevelSheet"))
         .addSeparator()
-        .addSubMenu(ui.createMenu("Create test case")
-        .addItem('Create all combination test case', 'createAllCombinationTestcase')
-        .addItem('Create one-wise test case', 'createOneWiseTestcase')
-        .addItem('Create pair-wise test case', 'createPairWiseTestcase'))
+        .addSubMenu(ui
+        .createMenu("Create test case")
+        .addItem("Create all combination test case", "createAllCombinationTestcase")
+        .addItem("Create one-wise test case", "createOneWiseTestcase")
+        .addItem("Create pair-wise test case", "createPairWiseTestcase"))
         .addToUi();
 }
 global.onOpen = onOpen;
@@ -1281,9 +1293,10 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "default", function() { return Utils; });
 class Utils {
     static isNotBlank(value) {
-        let result = typeof value === 'undefined' || value === '';
+        const result = typeof value === "undefined" || value === "";
         return !result;
     }
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any,@typescript-eslint/ban-types
     static transpose(a) {
         return Object.keys(a[0]).map(function (c) {
             return a.map(function (r) {
@@ -1294,17 +1307,13 @@ class Utils {
     /**
      * checkUndefined
      */
+    // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types,@typescript-eslint/no-explicit-any
     static checkUndefined(value, message) {
-        if (typeof value === 'undefined') {
+        if (typeof value === "undefined") {
             throw new Error(message);
         }
     }
-    static setPairWiseAPIURL(value) {
-        PropertiesService.getScriptProperties().setProperty('API_URL', value);
-    }
-    static getPairWiseAPIURL() {
-        return PropertiesService.getScriptProperties().getProperty('API_URL');
-    }
+    // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types,@typescript-eslint/no-explicit-any
     static getPermutations(array, size) {
         function p(t, i) {
             if (t.length === size) {
@@ -1317,7 +1326,7 @@ class Utils {
             p(t.concat(array[i]), i + 1);
             p(t, i + 1);
         }
-        var result = [];
+        const result = [];
         p([], 0);
         return result;
     }
@@ -1772,16 +1781,17 @@ exports.product = (...list) => {
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "oneWise", function() { return oneWise; });
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any,@typescript-eslint/explicit-module-boundary-types
 const oneWise = (arr, randomFn) => {
-    let fn = randomFn || Math.random;
-    let interactions = []; // matrix
+    const fn = randomFn || Math.random;
+    const interactions = []; // matrix
     let greatest = 1;
     let len = 0;
     let elems = null; // parameter
     let row = null;
     for (let i = 0; i < greatest; ++i) {
         row = [];
-        for (let j in arr) {
+        for (const j in arr) {
             elems = arr[j];
             len = elems.length;
             if (len > greatest) {
@@ -1818,6 +1828,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _libs_covertable_index__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../libs/covertable/index */ "./src/libs/covertable/index.js");
 /* harmony import */ var _libs_covertable_index__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_libs_covertable_index__WEBPACK_IMPORTED_MODULE_0__);
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any,@typescript-eslint/explicit-module-boundary-types
 const pairWise = (values) => {
     return _libs_covertable_index__WEBPACK_IMPORTED_MODULE_0___default()(values, {
         // optional
